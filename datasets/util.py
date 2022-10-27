@@ -345,6 +345,7 @@ def build_contrast_loader(opt, ngpus_per_node):
     #use_jigsaw = opt.jigsaw
     #use_memory_bank = (opt.mem == 'bank')
     n_aug = opt.n_aug
+    n_scale = opt.n_scale
     batch_size = int(opt.batch_size / opt.world_size)
     num_workers = int((opt.num_workers + ngpus_per_node - 1) / ngpus_per_node)
     csv_path = opt.csv_path
@@ -363,7 +364,7 @@ def build_contrast_loader(opt, ngpus_per_node):
     #         train_dir, transform=train_transform,
     #         two_crop=(not use_memory_bank)
     #     )
-    train_dataset = IQAImageClass(csv_path,n_aug)
+    train_dataset = IQAImageClass(csv_path,n_aug, n_scale)
 
     train_sampler = torch.utils.data.distributed.DistributedSampler(train_dataset)
 

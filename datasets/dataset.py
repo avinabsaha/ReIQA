@@ -53,12 +53,13 @@ class ImageFolderInstance(datasets.ImageFolder):
 
 class IQAImageClass(data.Dataset):
 
-    def __init__(self, csv_path, n_aug = 7):
+    def __init__(self, csv_path, n_aug = 7, n_scale=1):
 
         super().__init__()
         df = pd.read_csv(csv_path)       
         self.image_name  = df['Image_path']
         self.n_aug = n_aug
+        self.n_scale = n_scale
         #self.crop_transform()
     def __len__(self):
 
@@ -180,7 +181,9 @@ class IQAImageClass(data.Dataset):
 
         image = Image.open(self.image_name[idx]).convert('RGB')
 
-
+        if self.n_scale == 2:
+            image_half = image.resize((image.size[0]//2,image.size[1]//2))
+        
 
 
         ## create  positive pair
@@ -211,4 +214,41 @@ class IQAImageClass(data.Dataset):
         temp = chunk1[0]
         chunk1[0] = chunk2[0]
         chunk2[0] = temp
-        return torch.cat((chunk1, chunk2), dim=1)
+        t1 =  torch.cat((chunk1, chunk2), dim=1)
+
+        if self.n_scale == 2:
+
+            ## create  positive pair
+            img_pair1 = transforms.ToTensor()(image_half)  # 1, 3, H, W
+            chunk3 = img_pair1.unsqueeze(0)
+            img_pair2 = transforms.ToTensor()(image_half)  # 1, 3, H, W
+            chunk4 = img_pair2.unsqueeze(0)
+
+            
+
+            choices = list(range(1, 23))
+            random.shuffle(choices)
+            for i in range(0,self.n_aug):
+                ## generate self.aug distortion-augmentations
+                img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image_half))
+                img_aug_i = img_aug_i.unsqueeze(0)
+                chunk3 = torch.cat([chunk3, img_aug_i], dim=0)
+                chunk4 = torch.cat([chunk4, img_aug_i], dim=0)
+
+            # chunk3, chunk4  -> self.n_aug+1 , 3, H/2, W/2
+
+            # generate two random crops
+            chunk3 = self.crop_transform(chunk3)
+            chunk4 = self.crop_transform(chunk4)
+
+            #chunk1, chunk2  -> self.n_aug+1 , 3, 256 , 256
+
+            temp = chunk3[0]
+            chunk3[0] = chunk4[0]
+            chunk4[0] = temp
+            t2 = torch.cat((chunk3, chunk4), dim=1)
+
+            if self.n_scale == 1:
+                return t1
+            else:
+                return torch.cat((t1, t2), dim=1)

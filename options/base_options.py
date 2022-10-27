@@ -40,7 +40,9 @@ class BaseOptions(object):
         parser.add_argument('-j', '--num_workers', type=int, default=40,
                             help='num of workers to use')
         parser.add_argument('-n_aug', '--n_aug', type=int, default=7,
-                            help='num of workers to use')
+                            help='num of augmentations per image to use')
+        parser.add_argument('-n_scale', '--n_scale', type=int, default=1,
+                            help='num of scales per image to use. 1 only image, 2 image and half resized image')
 
         # optimization
         parser.add_argument('--epochs', type=int, default=30,
