@@ -248,7 +248,7 @@ class IQAImageClass(data.Dataset):
             chunk4[0] = temp
             t2 = torch.cat((chunk3, chunk4), dim=1)
 
-            if self.n_scale == 1:
-                return t1
-            else:
-                return torch.cat((t1, t2), dim=1)
+        if self.n_scale == 1:
+            return t1
+        else:
+            return torch.cat((t1, t2), dim=0)
