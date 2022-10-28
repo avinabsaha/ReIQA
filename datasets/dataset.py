@@ -181,18 +181,14 @@ class IQAImageClass(data.Dataset):
 
         image = Image.open(self.image_name[idx]).convert('RGB')
 
-        if self.n_scale == 2:
-            image_half = image.resize((image.size[0]//2,image.size[1]//2))
+        # if self.n_scale == 2:
+        #     image_half = image.resize((image.size[0]//2,image.size[1]//2))
         
-
-
         ## create  positive pair
         img_pair1 = transforms.ToTensor()(image)  # 1, 3, H, W
         chunk1 = img_pair1.unsqueeze(0)
         img_pair2 = transforms.ToTensor()(image)  # 1, 3, H, W
         chunk2 = img_pair2.unsqueeze(0)
-
-        
 
         choices = list(range(1, 23))
         random.shuffle(choices)
@@ -206,47 +202,49 @@ class IQAImageClass(data.Dataset):
         # chunk1, chunk2  -> self.n_aug+1 , 3, H, W
 
         # generate two random crops
-        chunk1 = self.crop_transform(chunk1)
-        chunk2 = self.crop_transform(chunk2)
+        chunk1_1 = self.crop_transform(chunk1)
+        chunk1_2 = self.crop_transform(chunk2)
 
         #chunk1, chunk2  -> self.n_aug+1 , 3, 256 , 256
 
-        temp = chunk1[0]
-        chunk1[0] = chunk2[0]
-        chunk2[0] = temp
-        t1 =  torch.cat((chunk1, chunk2), dim=1)
+        temp = chunk1_1[0]
+        chunk1_1[0] = chunk1_2[0]
+        chunk1_2[0] = temp
+        t1 =  torch.cat((chunk1_1, chunk1_2), dim=1)
 
         if self.n_scale == 2:
 
             ## create  positive pair
-            img_pair1 = transforms.ToTensor()(image_half)  # 1, 3, H, W
-            chunk3 = img_pair1.unsqueeze(0)
-            img_pair2 = transforms.ToTensor()(image_half)  # 1, 3, H, W
-            chunk4 = img_pair2.unsqueeze(0)
+            # img_pair1 = transforms.ToTensor()(image_half)  # 1, 3, H, W
+            # chunk3 = img_pair1.unsqueeze(0)
+            # img_pair2 = transforms.ToTensor()(image_half)  # 1, 3, H, W
+            # chunk4 = img_pair2.unsqueeze(0)
 
             
 
-            choices = list(range(1, 23))
-            random.shuffle(choices)
-            for i in range(0,self.n_aug):
-                ## generate self.aug distortion-augmentations
-                img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image_half))
-                img_aug_i = img_aug_i.unsqueeze(0)
-                chunk3 = torch.cat([chunk3, img_aug_i], dim=0)
-                chunk4 = torch.cat([chunk4, img_aug_i], dim=0)
+            # choices = list(range(1, 23))
+            # random.shuffle(choices)
+            # for i in range(0,self.n_aug):
+            #     ## generate self.aug distortion-augmentations
+            #     img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image_half))
+            #     img_aug_i = img_aug_i.unsqueeze(0)
+            #     chunk3 = torch.cat([chunk3, img_aug_i], dim=0)
+            #     chunk4 = torch.cat([chunk4, img_aug_i], dim=0)
 
-            # chunk3, chunk4  -> self.n_aug+1 , 3, H/2, W/2
+            # # chunk3, chunk4  -> self.n_aug+1 , 3, H/2, W/2
 
+            chunk3 = torch.nn.functional.interpolate(chunk1,size=(chunk1.shape[2]//2,chunk1.shape[3]//2),mode='bicubic',align_corners=True)
+            chunk4 = torch.nn.functional.interpolate(chunk2,size=(chunk2.shape[2]//2,chunk2.shape[3]//2),mode='bicubic',align_corners=True)
             # generate two random crops
-            chunk3 = self.crop_transform(chunk3)
-            chunk4 = self.crop_transform(chunk4)
+            chunk2_1 = self.crop_transform(chunk3)
+            chunk2_2 = self.crop_transform(chunk4)
 
             #chunk1, chunk2  -> self.n_aug+1 , 3, 256 , 256
 
-            temp = chunk3[0]
-            chunk3[0] = chunk4[0]
-            chunk4[0] = temp
-            t2 = torch.cat((chunk3, chunk4), dim=1)
+            temp = chunk2_1[0]
+            chunk2_1[0] = chunk2_2[0]
+            chunk2_2[0] = temp
+            t2 = torch.cat((chunk2_1, chunk2_2), dim=1)
 
         if self.n_scale == 1:
             return t1
