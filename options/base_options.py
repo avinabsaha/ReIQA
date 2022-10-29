@@ -43,6 +43,8 @@ class BaseOptions(object):
                             help='num of augmentations per image to use')
         parser.add_argument('-n_scale', '--n_scale', type=int, default=1,
                             help='num of scales per image to use. 1 only image, 2 image and half resized image')
+        parser.add_argument('-n_distortions', '--n_distortions', type=int, default=1,
+                            help='num of distortions per image crop to use. 1 for single distortion image, 2 for randomly selecting amoing 1/2 distortions')
 
         # optimization
         parser.add_argument('--epochs', type=int, default=30,

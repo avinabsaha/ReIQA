@@ -53,13 +53,14 @@ class ImageFolderInstance(datasets.ImageFolder):
 
 class IQAImageClass(data.Dataset):
 
-    def __init__(self, csv_path, n_aug = 7, n_scale=1):
+    def __init__(self, csv_path, n_aug = 7, n_scale=1, n_distortions=1):
 
         super().__init__()
         df = pd.read_csv(csv_path)       
         self.image_name  = df['Image_path']
         self.n_aug = n_aug
         self.n_scale = n_scale
+        self.n_distortions = n_distortions
         #self.crop_transform()
     def __len__(self):
 
@@ -157,6 +158,22 @@ class IQAImageClass(data.Dataset):
 
             im = imjitter(im,level)
 
+        elif choice == 23:
+
+            im = imresizedist_bilinear(im,level)
+
+        elif choice == 24:
+
+            im = imresizedist_nearest(im,level)
+
+        elif choice == 25:
+
+            im = imresizedist_lanczos(im,level)
+
+        elif choice == 26:
+
+            im = imblurmotion(im,level)
+
         else :
             
             pass
@@ -190,14 +207,24 @@ class IQAImageClass(data.Dataset):
         img_pair2 = transforms.ToTensor()(image)  # 1, 3, H, W
         chunk2 = img_pair2.unsqueeze(0)
 
-        choices = list(range(1, 23))
+        choices = list(range(1, 27))
         random.shuffle(choices)
         for i in range(0,self.n_aug):
-            ## generate self.aug distortion-augmentations
-            img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image))
-            img_aug_i = img_aug_i.unsqueeze(0)
-            chunk1 = torch.cat([chunk1, img_aug_i], dim=0)
-            chunk2 = torch.cat([chunk2, img_aug_i], dim=0)
+            if n_distortions == 1:
+                ## generate self.aug distortion-augmentations
+                img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image))
+                img_aug_i = img_aug_i.unsqueeze(0)
+                chunk1 = torch.cat([chunk1, img_aug_i], dim=0)
+                chunk2 = torch.cat([chunk2, img_aug_i], dim=0)
+            else :
+                j = random.randint(1,22)
+                if random.random()>0.2:
+                    img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image))
+                else:
+                    img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[j], self.iqa_transformations(choices[i], image)))
+                    img_aug_i = img_aug_i.unsqueeze(0)
+                    chunk1 = torch.cat([chunk1, img_aug_i], dim=0)
+                    chunk2 = torch.cat([chunk2, img_aug_i], dim=0)
 
         # chunk1, chunk2  -> self.n_aug+1 , 3, H, W
 

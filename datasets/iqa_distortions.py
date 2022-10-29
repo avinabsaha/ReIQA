@@ -83,7 +83,7 @@ def imblurlens(im, level):
     im = Image.fromarray(im)
     return im
 
-
+"""
 def imblurmotion (im, level):
 
     # MATLAB version https://github.com/alexandrovteam/IMS_quality/blob/master/codebase/fspecialIM.m
@@ -140,7 +140,33 @@ def imblurmotion (im, level):
     ndimage.convolve(im[:,:,2],  h2, output = im[:,:,2], mode='nearest')
     im = Image.fromarray(im)
     return im
+"""
 
+def imblurmotion (im, level):
+
+    levels = [12, 16, 20, 24, 28]
+
+    kernel_size = levels[level]
+    phi = random.choice([0,90])/(180)*np.pi
+    kernel = np.zeros((kernel_size, kernel_size))
+
+    im = np.array(im)
+
+    if phi == 0:
+        kernel[:, int((kernel_size - 1)/2)] = np.ones(kernel_size)
+    else :
+        kernel[int((kernel_size - 1)/2), :] = np.ones(kernel_size)
+
+    kernel/=kernel_size
+
+
+    ndimage.convolve(im[:,:,0],  kernel, output = im[:,:,0], mode='nearest')
+    ndimage.convolve(im[:,:,1],  kernel, output = im[:,:,1], mode='nearest')
+    ndimage.convolve(im[:,:,2],  kernel, output = im[:,:,2], mode='nearest')
+
+    im = Image.fromarray(im)
+
+    return im
 
 def imcolordiffuse(im,level):
 
@@ -437,6 +463,62 @@ def imresizedist(im,level) :
 
     im = resized_image.resize((w,h))
     return im
+
+def imresizedist_bilinear(im,level) :
+
+    levels = [2,3,4,8,16]
+    amount = levels[level]
+
+    size = im.size
+
+    w = size[0]
+    h = size[1]
+
+    scaled_w = int(w/amount)
+    scaled_h = int(h/amount)
+
+    resized_image = im.resize((scaled_w,scaled_h),Image.BILINEAR)
+
+    im = resized_image.resize((w,h),Image.BILINEAR)
+    return im
+
+
+def imresizedist_nearest(im,level) :
+
+    levels = [2,3,4,5,6]
+    amount = levels[level]
+
+    size = im.size
+
+    w = size[0]
+    h = size[1]
+
+    scaled_w = int(w/amount)
+    scaled_h = int(h/amount)
+
+    resized_image = im.resize((scaled_w,scaled_h),Image.NEAREST)
+
+    im = resized_image.resize((w,h),Image.NEAREST)
+    return im
+
+def imresizedist_lanczos(im,level) :
+
+    levels = [2,3,4,8,16]
+    amount = levels[level]
+
+    size = im.size
+
+    w = size[0]
+    h = size[1]
+
+    scaled_w = int(w/amount)
+    scaled_h = int(h/amount)
+
+    resized_image = im.resize((scaled_w,scaled_h),Image.LANCZOS)
+
+    im = resized_image.resize((w,h),Image.LANCZOS)
+    return im
+
 
 def imsharpenHi(im, level):
     levels = [1, 2, 3, 6, 12]
