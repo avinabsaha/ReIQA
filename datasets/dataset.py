@@ -219,7 +219,7 @@ class IQAImageClass(data.Dataset):
                 chunk2 = torch.cat([chunk2, img_aug_i], dim=0)
             else :
                 j = random.randint(0,25)
-                if random.random()>0.2:
+                if random.random()>0.1:
                     level = random.randint(0,4)
                     img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image, level))
                 else:
