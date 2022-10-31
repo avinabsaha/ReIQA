@@ -66,9 +66,9 @@ class IQAImageClass(data.Dataset):
 
         return (len(self.image_name))
 
-    def iqa_transformations(self, choice, im):
+    def iqa_transformations(self, choice, im, level):
 
-        level = random.randint(0,4)
+        #level = random.randint(0,4)
 
         if choice == 1:
 
@@ -180,7 +180,7 @@ class IQAImageClass(data.Dataset):
 
         return im
 
-    def crop_transform(self, image, crop_size=224):
+    def crop_transform(self, image, crop_size=256):
 
         #print(image.shape)
         if image.shape[2] < crop_size or image.shape[3] < crop_size :
@@ -212,16 +212,21 @@ class IQAImageClass(data.Dataset):
         for i in range(0,self.n_aug):
             if self.n_distortions == 1:
                 ## generate self.aug distortion-augmentations
-                img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image))
+                level = random.randint(0,4)
+                img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image, level))
                 img_aug_i = img_aug_i.unsqueeze(0)
                 chunk1 = torch.cat([chunk1, img_aug_i], dim=0)
                 chunk2 = torch.cat([chunk2, img_aug_i], dim=0)
             else :
                 j = random.randint(0,25)
                 if random.random()>0.2:
-                    img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image))
+                    level = random.randint(0,4)
+                    img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image, level))
                 else:
-                    img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[j], self.iqa_transformations(choices[i], image)))
+                    level1 = random.randint(0,4)
+                    level2 = random.randint(0,level1)
+                    level1 = level1-level2
+                    img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[j], self.iqa_transformations(choices[i], image, level1),level2))
                 img_aug_i = img_aug_i.unsqueeze(0)
                 chunk1 = torch.cat([chunk1, img_aug_i], dim=0)
                 chunk2 = torch.cat([chunk2, img_aug_i], dim=0)
