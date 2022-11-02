@@ -197,6 +197,7 @@ class IQAImageClass(data.Dataset):
     def __getitem__(self,idx) :
 
         image = Image.open(self.image_name[idx]).convert('RGB')
+        #print(self.image_name[idx])
 
         # if self.n_scale == 2:
         #     image_half = image.resize((image.size[0]//2,image.size[1]//2))
