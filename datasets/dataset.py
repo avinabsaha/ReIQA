@@ -180,7 +180,7 @@ class IQAImageClass(data.Dataset):
 
         return im
 
-    def crop_transform(self, image, crop_size=256):
+    def crop_transform(self, image, crop_size=224):
 
         #print(image.shape)
         if image.shape[2] < crop_size or image.shape[3] < crop_size :
