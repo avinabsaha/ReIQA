@@ -207,8 +207,8 @@ class IQAImageClass(data.Dataset):
         ## create  positive pair
         img_pair1 = transforms.ToTensor()(image)  # 1, 3, H, W
         chunk1 = img_pair1.unsqueeze(0)
-        img_pair2 = transforms.ToTensor()(image)  # 1, 3, H, W
-        chunk2 = img_pair2.unsqueeze(0)
+        #img_pair2 = transforms.ToTensor()(image)  # 1, 3, H, W
+        #chunk2 = img_pair2.unsqueeze(0)
 
         choices = list(range(1, 27))
         random.shuffle(choices)
@@ -219,7 +219,7 @@ class IQAImageClass(data.Dataset):
                 img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[i], image, level))
                 img_aug_i = img_aug_i.unsqueeze(0)
                 chunk1 = torch.cat([chunk1, img_aug_i], dim=0)
-                chunk2 = torch.cat([chunk2, img_aug_i], dim=0)
+                #chunk2 = torch.cat([chunk2, img_aug_i], dim=0)
             else :
                 j = random.randint(0,25)
                 if random.random()>0.1:
@@ -232,13 +232,13 @@ class IQAImageClass(data.Dataset):
                     img_aug_i = transforms.ToTensor()(self.iqa_transformations(choices[j], self.iqa_transformations(choices[i], image, level1),level2))
                 img_aug_i = img_aug_i.unsqueeze(0)
                 chunk1 = torch.cat([chunk1, img_aug_i], dim=0)
-                chunk2 = torch.cat([chunk2, img_aug_i], dim=0)
+                #chunk2 = torch.cat([chunk2, img_aug_i], dim=0)
 
         # chunk1, chunk2  -> self.n_aug+1 , 3, H, W
 
         # generate two random crops
         chunk1_1 = self.crop_transform(chunk1,self.patch_size)
-        chunk1_2 = self.crop_transform(chunk2,self.patch_size)
+        chunk1_2 = self.crop_transform(chunk1,self.patch_size)
 
         #chunk1, chunk2  -> self.n_aug+1 , 3, 256 , 256
 
@@ -272,19 +272,19 @@ class IQAImageClass(data.Dataset):
             # # chunk3, chunk4  -> self.n_aug+1 , 3, H/2, W/2
 
             chunk3 = torch.nn.functional.interpolate(chunk1,size=(chunk1.shape[2]//2,chunk1.shape[3]//2),mode='bicubic',align_corners=True)
-            chunk4 = torch.nn.functional.interpolate(chunk2,size=(chunk2.shape[2]//2,chunk2.shape[3]//2),mode='bicubic',align_corners=True)
+            #chunk4 = torch.nn.functional.interpolate(chunk2,size=(chunk2.shape[2]//2,chunk2.shape[3]//2),mode='bicubic',align_corners=True)
             # generate two random crops
             chunk2_1 = self.crop_transform(chunk3,self.patch_size)
-            chunk2_2 = self.crop_transform(chunk4,self.patch_size)
+            chunk2_2 = self.crop_transform(chunk3,self.patch_size)
 
             #chunk1, chunk2  -> self.n_aug+1 , 3, 256 , 256
 
             #temp = chunk2_1[0]
             #chunk2_1[0] = chunk2_2[0]
             #chunk2_2[0] = temp
-            chunk2_1[0:self.swap] = chunk2_1[0:self.swap] + chunk2_2[0:self.swap]            ## x = x + y
-            chunk2_2[0:self.swap] = chunk2_1[0:self.swap] - chunk2_2[0:self.swap]            ## y = x - y
-            chunk2_1[0:self.swap] = chunk2_1[0:self.swap] - chunk2_2[0:self.swap] 
+            chunk2_1[self.swap:] = chunk2_1[self.swap:] + chunk2_2[self.swap:]            ## x = x + y
+            chunk2_2[self.swap:] = chunk2_1[self.swap:] - chunk2_2[self.swap:]            ## y = x - y
+            chunk2_1[self.swap:] = chunk2_1[self.swap:] - chunk2_2[self.swap:] 
             t2 = torch.cat((chunk2_1, chunk2_2), dim=1)
 
         if self.n_scale == 1:
