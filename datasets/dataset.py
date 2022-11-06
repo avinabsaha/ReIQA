@@ -53,7 +53,7 @@ class ImageFolderInstance(datasets.ImageFolder):
 
 class IQAImageClass(data.Dataset):
 
-    def __init__(self, csv_path, n_aug = 7, n_scale=1, n_distortions=1):
+    def __init__(self, csv_path, n_aug = 7, n_scale=1, n_distortions=1, patch_size=224):
 
         super().__init__()
         df = pd.read_csv(csv_path)       
@@ -61,6 +61,7 @@ class IQAImageClass(data.Dataset):
         self.n_aug = n_aug
         self.n_scale = n_scale
         self.n_distortions = n_distortions
+        self.patch_size = patch_size
         #self.crop_transform()
     def __len__(self):
 
@@ -235,8 +236,8 @@ class IQAImageClass(data.Dataset):
         # chunk1, chunk2  -> self.n_aug+1 , 3, H, W
 
         # generate two random crops
-        chunk1_1 = self.crop_transform(chunk1)
-        chunk1_2 = self.crop_transform(chunk2)
+        chunk1_1 = self.crop_transform(chunk1,self.patch_size)
+        chunk1_2 = self.crop_transform(chunk2,self.patch_size)
 
         #chunk1, chunk2  -> self.n_aug+1 , 3, 256 , 256
 
@@ -269,8 +270,8 @@ class IQAImageClass(data.Dataset):
             chunk3 = torch.nn.functional.interpolate(chunk1,size=(chunk1.shape[2]//2,chunk1.shape[3]//2),mode='bicubic',align_corners=True)
             chunk4 = torch.nn.functional.interpolate(chunk2,size=(chunk2.shape[2]//2,chunk2.shape[3]//2),mode='bicubic',align_corners=True)
             # generate two random crops
-            chunk2_1 = self.crop_transform(chunk3)
-            chunk2_2 = self.crop_transform(chunk4)
+            chunk2_1 = self.crop_transform(chunk3,self.patch_size)
+            chunk2_2 = self.crop_transform(chunk4,self.patch_size)
 
             #chunk1, chunk2  -> self.n_aug+1 , 3, 256 , 256
 
