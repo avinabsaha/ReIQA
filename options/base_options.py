@@ -47,6 +47,9 @@ class BaseOptions(object):
                             help='num of distortions per image crop to use. 1 for single distortion image, 2 for randomly selecting amoing 1/2 distortions')
         parser.add_argument('-patch_size', '--patch_size', type=int, default=224,
                             help='patch_size to crop for each image')
+        parser.add_argument('-swap_crops', '--swap_crops', type=int, default=1,
+                            help='patch_size to crop for each image')
+        
 
         # optimization
         parser.add_argument('--epochs', type=int, default=30,

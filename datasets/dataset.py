@@ -53,7 +53,7 @@ class ImageFolderInstance(datasets.ImageFolder):
 
 class IQAImageClass(data.Dataset):
 
-    def __init__(self, csv_path, n_aug = 7, n_scale=1, n_distortions=1, patch_size=224):
+    def __init__(self, csv_path, n_aug = 7, n_scale=1, n_distortions=1, patch_size=224, swap_crops=1):
 
         super().__init__()
         df = pd.read_csv(csv_path)       
@@ -63,6 +63,7 @@ class IQAImageClass(data.Dataset):
         self.n_distortions = n_distortions
         self.patch_size = patch_size
         self.swap = (self.n_aug+1)//2
+        self.swap_crops = swap_crops
         #self.crop_transform()
     def __len__(self):
 
@@ -245,9 +246,11 @@ class IQAImageClass(data.Dataset):
         #temp = chunk1_1[0]
         #chunk1_1[0] = chunk1_2[0]
         #chunk1_2[0] = temp
-        chunk1_1[0:self.swap] = chunk1_1[0:self.swap] + chunk1_2[0:self.swap]            ## x = x + y
-        chunk1_2[0:self.swap] = chunk1_1[0:self.swap] - chunk1_2[0:self.swap]            ## y = x - y
-        chunk1_1[0:self.swap] = chunk1_1[0:self.swap] - chunk1_2[0:self.swap]            ## x = x - y
+
+        if self.swap_crops == 1:
+            chunk1_1[0:self.swap] = chunk1_1[0:self.swap] + chunk1_2[0:self.swap]            ## x = x + y
+            chunk1_2[0:self.swap] = chunk1_1[0:self.swap] - chunk1_2[0:self.swap]            ## y = x - y
+            chunk1_1[0:self.swap] = chunk1_1[0:self.swap] - chunk1_2[0:self.swap]            ## x = x - y
         t1 =  torch.cat((chunk1_1, chunk1_2), dim=1)
 
         if self.n_scale == 2:
@@ -282,9 +285,12 @@ class IQAImageClass(data.Dataset):
             #temp = chunk2_1[0]
             #chunk2_1[0] = chunk2_2[0]
             #chunk2_2[0] = temp
-            chunk2_1[self.swap:] = chunk2_1[self.swap:] + chunk2_2[self.swap:]            ## x = x + y
-            chunk2_2[self.swap:] = chunk2_1[self.swap:] - chunk2_2[self.swap:]            ## y = x - y
-            chunk2_1[self.swap:] = chunk2_1[self.swap:] - chunk2_2[self.swap:] 
+
+            if self.swap_crops == 1:
+                print("swapping")
+                chunk2_1[self.swap:] = chunk2_1[self.swap:] + chunk2_2[self.swap:]            ## x = x + y
+                chunk2_2[self.swap:] = chunk2_1[self.swap:] - chunk2_2[self.swap:]            ## y = x - y
+                chunk2_1[self.swap:] = chunk2_1[self.swap:] - chunk2_2[self.swap:] 
             t2 = torch.cat((chunk2_1, chunk2_2), dim=1)
 
         if self.n_scale == 1:
