@@ -64,6 +64,8 @@ class IQAImageClass(data.Dataset):
         self.patch_size = patch_size
         self.swap = (self.n_aug+1)//2
         self.swap_crops = swap_crops
+        self.min_OLA = 0.1
+        self.max_OLA = 0.3
         #self.crop_transform()
     def __len__(self):
 
@@ -183,6 +185,20 @@ class IQAImageClass(data.Dataset):
 
         return im
 
+    def choose_y(self):
+        low_ = self.patch_size*(1-self.max_OLA)
+        high_ = self.patch_size*(1-self.min_OLA)
+        y = np.random.randint(low = low_, high = high_)
+        # print("choosing Y between: [" , low_, ',', high_, '] -> ', y)
+        return y
+    
+    def choose_x(self, y):
+        low_ = np.maximum(0,((1-self.max_OLA)*self.patch_size**2 - self.patch_size*y)/(self.patch_size - y))
+        high_ = np.maximum(0,((1-self.min_OLA)*self.patch_size**2 - self.patch_size*y)/(self.patch_size - y))
+        x = np.random.randint(low = low_, high = high_)
+        # print("choosing X between: [" , low_, ',', high_, '] -> ', x)
+        return x
+
     def crop_transform(self, image, crop_size=224):
 
         #print(image.shape)
@@ -238,14 +254,23 @@ class IQAImageClass(data.Dataset):
         # chunk1, chunk2  -> self.n_aug+1 , 3, H, W
 
         # generate two random crops
-        chunk1_1 = self.crop_transform(chunk1,self.patch_size)
-        chunk1_2 = self.crop_transform(chunk1,self.patch_size)
+        #chunk1_1 = self.crop_transform(chunk1,self.patch_size)
+        #chunk1_2 = self.crop_transform(chunk1,self.patch_size)
 
         #chunk1, chunk2  -> self.n_aug+1 , 3, 256 , 256
 
         #temp = chunk1_1[0]
         #chunk1_1[0] = chunk1_2[0]
         #chunk1_2[0] = temp
+
+        start_y = self.choose_y()
+        start_x = self.choose_x(start_y)
+        chunk1_1 = self.crop_transform(chunk1, crop_size = self.patch_size+max(start_y, start_x))
+
+        chunk1_2 = chunk1_1[:,:,start_y:start_y+self.patch_size, start_x:start_x+self.patch_size]
+        chunk1_1 = chunk1_1[:,:,:self.patch_size,:self.patch_size]
+
+
 
         if self.swap_crops == 1:
             chunk1_1[0:self.swap] = chunk1_1[0:self.swap] + chunk1_2[0:self.swap]            ## x = x + y
@@ -277,8 +302,15 @@ class IQAImageClass(data.Dataset):
             chunk3 = torch.nn.functional.interpolate(chunk1,size=(chunk1.shape[2]//2,chunk1.shape[3]//2),mode='bicubic',align_corners=True)
             #chunk4 = torch.nn.functional.interpolate(chunk2,size=(chunk2.shape[2]//2,chunk2.shape[3]//2),mode='bicubic',align_corners=True)
             # generate two random crops
-            chunk2_1 = self.crop_transform(chunk3,self.patch_size)
-            chunk2_2 = self.crop_transform(chunk3,self.patch_size)
+            #chunk2_1 = self.crop_transform(chunk3,self.patch_size)
+            #chunk2_2 = self.crop_transform(chunk3,self.patch_size)
+
+            start_y = self.choose_y()
+            start_x = self.choose_x(start_y)
+            chunk2_1 = self.crop_transform(chunk3, crop_size = self.patch_size+max(start_y, start_x))
+
+            chunk2_2 = chunk2_1[:,:,start_y:start_y+self.patch_size, start_x:start_x+self.patch_size]
+            chunk2_1 = chunk2_1[:,:,:self.patch_size,:self.patch_size]
 
             #chunk1, chunk2  -> self.n_aug+1 , 3, 256 , 256
 
@@ -287,7 +319,6 @@ class IQAImageClass(data.Dataset):
             #chunk2_2[0] = temp
 
             if self.swap_crops == 1:
-                print("swapping")
                 chunk2_1[self.swap:] = chunk2_1[self.swap:] + chunk2_2[self.swap:]            ## x = x + y
                 chunk2_2[self.swap:] = chunk2_1[self.swap:] - chunk2_2[self.swap:]            ## y = x - y
                 chunk2_1[self.swap:] = chunk2_1[self.swap:] - chunk2_2[self.swap:] 
