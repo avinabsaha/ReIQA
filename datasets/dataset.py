@@ -64,8 +64,8 @@ class IQAImageClass(data.Dataset):
         self.patch_size = patch_size
         self.swap = (self.n_aug+1)//2
         self.swap_crops = swap_crops
-        self.min_OLA = 0.1
-        self.max_OLA = 0.3
+        self.min_OLA = 0.10
+        self.max_OLA = 0.30
         #self.crop_transform()
     def __len__(self):
 
