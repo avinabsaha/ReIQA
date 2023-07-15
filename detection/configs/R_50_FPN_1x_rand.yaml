@@ -1,3 +1,0 @@
-_BASE_: "R_50_FPN_1x.yaml"
-MODEL:
-  WEIGHTS: "" # random initialization
