@@ -21,6 +21,9 @@ ImageFile.LOAD_TRUNCATED_IMAGES = True
 from PIL import Image
 Image.MAX_IMAGE_PIXELS = None
 
+import moco.optimizer
+
+
 def main():
     args = TrainOptions().parse()
 
@@ -53,11 +56,19 @@ def main_worker(gpu, ngpus_per_node, args):
 
     # build criterion and optimizer
     criterion = nn.CrossEntropyLoss().cuda()
-    optimizer = torch.optim.SGD(model.parameters(),
-                                lr=args.learning_rate,
-                                momentum=args.momentum,
-                                weight_decay=args.weight_decay)
-
+    #optimizer = torch.optim.SGD(model.parameters(),
+    #                            lr=args.learning_rate,
+    #                            momentum=args.momentum,
+    #                            weight_decay=args.weight_decay)
+    
+    if args.optimizer == "SGD":
+        optimizer = torch.optim.SGD(model.parameters(), lr=args.learning_rate, momentum=args.momentum, weight_decay=args.weight_decay)
+    elif args.optimizer == "AdamW" : 
+        optimizer = torch.optim.AdamW(model.parameters(), args.learning_rate, weight_decay=args.weight_decay)  
+    elif args.optimizer == "LARS" : 
+        optimizer = moco.optimizer.LARS(model.parameters(),lr=args.learning_rate,weight_decay=args.weight_decay,momentum=args.momentum)
+    else :
+        optimizer = torch.optim.SGD(model.parameters(), lr=args.learning_rate, momentum=args.momentum, weight_decay=args.weight_decay)
     # wrap up models
     model, model_ema, optimizer = trainer.wrap_up(model, model_ema, optimizer)
 
