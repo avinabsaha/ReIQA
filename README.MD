@@ -10,7 +10,13 @@ The code has been tested on Linux systems with python 3.9, pytorch 1.13 and CUDA
 
 ## Training Re-IQA 
 
-### Training Data 
+### Quality Aware Module
+
+### Download Training Data 
+
+We follow the data training pipeline provided in CONTRIQUE.
+
+### Content Aware Module 
 
 ## Citation
 
