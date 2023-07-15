@@ -6,7 +6,7 @@ Official PyTorch implementation of Re-IQA, a No-Reference Image Quality Assessme
 
 ## Usage
 
-The code has been tested on Linux systems with python 3.9, pytorch 1.13 and CUDA 11.7. Please refer to [requirements.txt](requirements.txt) for installing dependent packages. 
+The code has been tested on Linux systems with python 3.9, pytorch 1.13 and CUDA 11.7. Please refer to [requirements.txt](requirements.txt) for installing the required packages. 
 
 ## Training Re-IQA 
 
@@ -24,7 +24,19 @@ Create a directory ```mkdir training_data``` to store images used for training R
 
 #### Training Command
 
+
+#### Obtaining Quality Aware Features
+
 ### Content Aware Module 
+
+We utilized the vanilla MoCo-v2 training code with ImageNet database provided at [PyContrast](https://github.com/HobbitLong/PyContrast) to train our Content Aware Module using the default settings. 
+
+#### Obtaining Content Aware Features
+
+### Training Linear Regressor
+
+
+
 
 ## Citation
 
