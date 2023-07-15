@@ -4,7 +4,9 @@ Official PyTorch implementation of Re-IQA, a No-Reference Image Quality Assessme
 
 [Preprint](https://arxiv.org/abs/2304.00451) [OpenAccess](https://openaccess.thecvf.com/content/CVPR2023/papers/Saha_Re-IQA_Unsupervised_Learning_for_Image_Quality_Assessment_in_the_Wild_CVPR_2023_paper.pdf) [Supplementary](https://openaccess.thecvf.com/content/CVPR2023/supplemental/Saha_Re-IQA_Unsupervised_Learning_CVPR_2023_supplemental.pdf) [Video](https://www.youtube.com/watch?v=gHIAC-L3eFg) [Slides](https://drive.google.com/file/d/1ckDpkJaj7Hk0KBX3g_0Kfpw3CBvPnGFE/view?usp=sharing) [Poster](https://drive.google.com/file/d/1aIob7YE77hT_LEARGftYdw1nINOLzENo/view?usp=sharing)
 
+# Usage
 
+The code has been tested on Linux systems with python 3.9 and pytorch 1.13. Please refer to requirements.txt for installing dependent packages.
 
 ## Citation
 
