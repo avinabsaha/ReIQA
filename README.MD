@@ -6,7 +6,7 @@ Official PyTorch implementation of Re-IQA, a No-Reference Image Quality Assessme
 
 ## Usage
 
-The code has been tested on Linux systems with python 3.9, pytorch 1.13 and CUDA 11.7. Please refer to [requirements.txt](requirements.txt) for installing the required packages. 
+The code has been tested on Linux systems with python 3.9, pytorch 1.13 and CUDA 11.7. Other dependencies can be installed via [requirements.txt](requirements.txt). 
 
 ## Training Re-IQA 
 
