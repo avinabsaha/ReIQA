@@ -29,7 +29,7 @@ Create a directory ```mkdir training_data``` to store images used for training R
 
 ### Content Aware Module 
 
-We utilized the vanilla MoCo-v2 training code using ResNet-50 architecture and ImageNet database provided at [PyContrast](https://github.com/HobbitLong/PyContrast) to train our Content Aware Module using the default settings. 
+We utilized the vanilla MoCo-v2 training code using ResNet-50 architecture and ImageNet database provided in the [PyContrast](https://github.com/HobbitLong/PyContrast) repository to train our Content Aware Module using the default settings. 
 
 #### Obtaining Content Aware Features
 
