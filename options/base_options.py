@@ -66,6 +66,8 @@ class BaseOptions(object):
                             help='momentum for SGD')
         parser.add_argument('--cosine', action='store_true',
                             help='using cosine annealing')
+        parser.add_argument('--optimizer', type=str, default='SGD',
+                            help='SGD/AdamW/LARS')
 
         # method selection
         parser.add_argument('--method', default='Customize', type=str,
