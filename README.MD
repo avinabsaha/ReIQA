@@ -16,7 +16,7 @@ The code has been tested on Linux systems with python 3.9, pytorch 1.13 and CUDA
 
 We follow the data training pipeline provided in [CONTRIQUE](https://github.com/pavancm/CONTRIQUE).
 Create a directory ```mkdir training_data``` to store images used for training RE-IQA-Quality-Aware Module.
-1. KADIS-700k : Download [KADIS-700k](http://database.mmsp-kn.de/kadid-10k-database.html) dataset. Store this data in the ```training_data/kadis700k``` directory. Note we do not require to generate the synthetically generated images as in CONTRIQUE.
+1. KADIS-700k : Download [KADIS-700k](http://database.mmsp-kn.de/kadid-10k-database.html) dataset. Store this data in the ```training_data/kadis700k``` directory. Note we do not use the synthetically distorted images as in CONTRIQUE.
 2. AVA : Download [AVA](https://github.com/mtobeiyf/ava_downloader) dataset and store in the ```training_data/UGC_images/AVA_Dataset``` directory.
 3. COCO : [COCO](https://cocodataset.org/#download) dataset contains 330k images spread across multiple competitions. We used 4 folders ```training_data/UGC_images/test2015, training_data/UGC_images/train2017, training_data/UGC_images/val2017, training_data/UGC_images/unlabeled2017``` for training.
 4. CERTH-Blur : [Blur](https://mklab.iti.gr/results/certh-image-blur-dataset/) dataset images are stored in the ```training_data/UGC_images/blur_image``` directory. We only use the images labelled as "naturally-blurred" from the training (220) and evaluation (411) sets. We have renumbered the images in the provided [csv file](csv_files/moco_train.csv).
