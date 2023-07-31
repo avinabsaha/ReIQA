@@ -6,7 +6,7 @@ Useful Links : [Preprint](https://arxiv.org/abs/2304.00451) [OpenAccess](https:/
 
 ## Usage
 
-The code has been tested on Linux systems with python 3.9, pytorch 1.13 and CUDA 11.7. Other dependencies can be installed via [requirements.txt](requirements.txt). 
+The code has been tested on Linux systems with python 3.9, pytorch 1.13.1, torchvision0.14.1 and CUDA 11.7. Other dependencies can be installed via [requirements.txt](requirements.txt). 
 
 ## Training Re-IQA 
 
