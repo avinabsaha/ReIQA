@@ -33,7 +33,7 @@ python main_contrast.py --method MoCov2 --cosine --head mlp --multiprocessing-di
 On the 5 other nodes, run the same command with --rank 1-5
 
 Clarifications : 
-In the paper submitted to CVPR, we had reported training for 25 epochs. However, we observed more stabilized IQA results when trained for 40 epochs. Thus, we recommend training for 40 epochs. Also, the earlier implementation of the paper, a learning rate of 0.6 was used with batch size scaling. The learning rate scaling formula based on batch size used was ((batch_size * 2 scales) / 64 * 0.6 ≈ 12). However, in the current code, you have simplified it to directly take the scaled learning rate as an input rather than calculating it using the scaling formula.
+In the paper submitted to CVPR, we had reported training for 25 epochs. However, we observed more stabilized IQA results when trained for 40 epochs. Thus, we recommend training for 40 epochs. Also, the earlier implementation of the paper, a learning rate of 0.6 was used with batch size scaling. The learning rate scaling formula based on batch size used was ((batch_size * 2 scales) / 64 * 0.6 ≈ 12). However, in the current code, we have simplified it to directly take the scaled learning rate as an input rather than calculating it using the scaling formula.
 
 #### Obtaining Quality Aware Features
 
