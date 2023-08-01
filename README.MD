@@ -24,10 +24,21 @@ Create a directory ```mkdir training_data``` to store images used for training R
 
 #### Training Command
 
+We use DDP Training across 6 nodes. 
+
+```
+python main_contrast.py --method MoCov2 --cosine --head mlp --multiprocessing-distributed --csv_path ./csv_files/moco_train.csv --model_path ./expt0  --optimizer LARS --tb_path ./expt0 -j 28 --batch_size 630 --learning_rate 12 --n_aug 11  --epochs 40 --n_scale 2 --n_distortions 1 --patch_size 160 --world-size 6 --warm --swap_crops 1 --dist-url tcp://[your first node address]:[specified port] --rank 0
+```
+
+On the 5 other nodes, run the same command with --rank 1-5
+
+Clarifications : 
+In the paper submitted to CVPR, we had reported training for 25 epochs. However, we observed more stabilized IQA results when trained for 40 epochs. Thus, we recommend training for 40 epochs. 
+In the earlier implementation of the paper, a learning rate of 0.6 was used with batch size scaling. The learning rate scaling formula based on batch size used was ((batch_size * 2 scales) / 64 * 0.6 ≈ 12). However, in the current code, you have simplified it to directly take the scaled learning rate as an input rather than calculating it using the scaling formula.
 
 #### Obtaining Quality Aware Features
 
-Download the quality-aware trained model from [Google Drive](https://drive.google.com/file/d/1DYMx8omn69yXUmBFL728JD3qMLNogFt8/view?usp=sharing) and store in a folder named ```re-iqa_ckpts```. Finally, to obtain Re-IQA Content-Aware features, run
+Download the quality-aware trained model from [Google Drive](https://drive.google.com/file/d/1DYMx8omn69yXUmBFL728JD3qMLNogFt8/view?usp=sharing) and store in a folder named ```re-iqa_ckpts```. Finally, to obtain Re-IQA Quality-Aware features, run
 
 ```
 python demo_quality_aware_feats.py --head mlp
