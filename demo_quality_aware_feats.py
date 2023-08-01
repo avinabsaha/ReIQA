@@ -37,14 +37,13 @@ def run_inference():
     model = torch.nn.DataParallel(model)
 
     # check and resume a model
-    ckpt_path =  './reiqa_ckpts/content_aware_r50.pth'
-
+    ckpt_path =  './reiqa_ckpts/quality_aware_r50.pth'
+    
     checkpoint = torch.load(ckpt_path, map_location='cpu')
     model.load_state_dict(checkpoint['model'])
 
     model.to(args.device)
     model.eval()
-
 
     img_path = "./sample_images/10004473376.jpg"
 
@@ -53,26 +52,21 @@ def run_inference():
     image2 = image.resize((image.size[0]//2,image.size[1]//2)) # half-scale
         
     # transform to tensor
-    img1 = transforms.ToTensor()(image)
-    img2 = transforms.ToTensor()(image2)
-
-
+    img1 = transforms.ToTensor()(image).unsqueeze(0)
+    img2 = transforms.ToTensor()(image2).unsqueeze(0)
 
     with torch.no_grad():
-        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],std=[0.229, 0.224, 0.225])
-        img1 = normalize(img1).unsqueeze(0)
-        img2 = normalize(img2).unsqueeze(0)
 
         feat1  = model.module.encoder(img1.to(args.device)) 
         feat2  = model.module.encoder(img2.to(args.device)) 
         feat = torch.cat((feat1,feat2),dim=1).detach().cpu().numpy()
                 
     # save features 
-    save_path = "feats_content_aware/"
+    save_path = "feats_quality_aware/"
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    np.save("feats_content_aware/" + img_path[img_path.rfind("/")+1:-4] + '_content_aware_features.npy', feat)
-    print('Content Aware feature Extracted')
+    np.save("feats_quality_aware/" + img_path[img_path.rfind("/")+1:-4] + '_quality_aware_features.npy', feat)
+    print('Quality Aware feature Extracted')
 
 
 
