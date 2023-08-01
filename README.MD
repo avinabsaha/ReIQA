@@ -57,7 +57,7 @@ python demo_content_aware_feats.py --head mlp
 
 ### Training Linear Regressor
 
-We used Sklearn's Linear Regression Models with Regularization for training the final IQA model. We recommend using either one of [Ridge](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) or [Elastic Net](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.ElasticNet.html) models and performing extensive hyper-paramter search for each database to extract maximum performance. 
+We used Sklearn's Linear Regression Models with Regularization for training the final IQA model. We recommend using either one of [Ridge](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.Ridge.html) or [Elastic Net](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.ElasticNet.html) models and performing extensive hyper-parameter search for each database to extract maximum performance. 
 
 ## Citation
 
