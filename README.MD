@@ -27,13 +27,19 @@ Create a directory ```mkdir training_data``` to store images used for training R
 
 #### Obtaining Quality Aware Features
 
+Download the quality-aware trained model from [Google Drive](https://drive.google.com/file/d/1DYMx8omn69yXUmBFL728JD3qMLNogFt8/view?usp=sharing) and store in a folder named ```re-iqa_ckpts```. Finally, to obtain Re-IQA Content-Aware features, run
+
+```
+python demo_quality_aware_feats.py --head mlp
+```
+
 ### Content Aware Module 
 
 We utilized the vanilla MoCo-v2 training code using ResNet-50 architecture and ImageNet database provided in the [PyContrast](https://github.com/HobbitLong/PyContrast) repository to train our Content Aware Module using the default settings. 
 
 #### Obtaining Content Aware Features
 
-Download the trained model from [Google Drive](https://drive.google.com/file/d/1TO-5fmZFT2_nt99j4IZen6vmXUb_UL3n/view?usp=sharing) and store in a folder named ```re-iqa_ckpts```. Finally, to obtain Re-IQA Content-Aware features, run
+Download the content-aware trained model from [Google Drive](https://drive.google.com/file/d/1TO-5fmZFT2_nt99j4IZen6vmXUb_UL3n/view?usp=sharing) and store in a folder named ```re-iqa_ckpts```. Finally, to obtain Re-IQA Content-Aware features, run
 
 ```
 python demo_content_aware_feats.py --head mlp
