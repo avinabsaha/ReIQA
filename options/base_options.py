@@ -44,7 +44,7 @@ class BaseOptions(object):
         parser.add_argument('-n_scale', '--n_scale', type=int, default=1,
                             help='num of scales per image to use. 1 only image, 2 image and half resized image')
         parser.add_argument('-n_distortions', '--n_distortions', type=int, default=1,
-                            help='num of distortions per image crop to use. 1 for single distortion image, 2 for randomly selecting amoing 1/2 distortions')
+                            help='num of distortions per image crop to use. 1 for single distortion image, 2 for randomly selecting among 1/2 distortions')
         parser.add_argument('-patch_size', '--patch_size', type=int, default=224,
                             help='patch_size to crop for each image')
         parser.add_argument('-swap_crops', '--swap_crops', type=int, default=1,
