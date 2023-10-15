@@ -88,7 +88,7 @@ def main_worker(gpu, ngpus_per_node, args):
         outs = trainer.train(epoch, train_loader, model, model_ema,
                              contrast, criterion, optimizer)
 
-        # log to tensorbard
+        # log to tensorboard
         trainer.logging(epoch, outs, optimizer.param_groups[0]['lr'])
 
         # save model
