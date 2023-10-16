@@ -12,6 +12,6 @@ def build_mem(opt, n_data):
         memory = mem_func(opt.feat_dim, opt.nce_k, opt.nce_t)
     else:
         raise NotImplementedError(
-            'mem not suported: {}'.format(opt.mem))
+            'mem not supported: {}'.format(opt.mem))
 
     return memory
